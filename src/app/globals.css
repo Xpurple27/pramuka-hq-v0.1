@@ -1,26 +1,92 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #090e0c; /* Deep forest-tinted charcoal black */
+  --foreground: #e2f0e9; /* Soft minty white */
+  --card-bg: rgba(15, 27, 22, 0.4);
+  --card-border: rgba(16, 185, 129, 0.15);
+  --accent-primary: #10b981; /* Emerald/Scout green */
+  --accent-secondary: #f59e0b; /* Amber/Scout gold */
+  --accent-glow: rgba(16, 185, 129, 0.25);
+  
+  --font-sans: var(--font-geist-sans), Inter, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.06) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(11, 22, 17, 0.65);
+  backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card {
+  background: rgba(13, 27, 20, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(16, 185, 129, 0.1);
+  transform: translateY(-2px);
+}
+
+.glow-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.glow-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+
+.glow-btn:hover::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Custom input styling for modern feeling */
+.custom-input {
+  background: rgba(8, 15, 12, 0.6);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--accent-glow);
+  outline: none;
+  background: rgba(8, 15, 12, 0.8);
 }
