@@ -1,7 +1,9 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { isSupabaseConfigured } from './config'
 
 export async function updateSession(request: NextRequest) {
+  if (!isSupabaseConfigured()) return NextResponse.next()
   let response = NextResponse.next({
     request: {
       headers: request.headers,
