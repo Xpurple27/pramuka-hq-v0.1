@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
-import type { ActionResult, AttendanceStatus, SkuStatus } from '@/types/scouthub'
+import type { ActionResult, AttendanceStatus, SkkLevel, SkuStatus } from '@/types/scouthub'
 
 const ok = (message: string): ActionResult => ({ ok: true, message })
 const fail = (message: string): ActionResult => ({ ok: false, message })
@@ -133,6 +133,7 @@ export async function saveMemberAction(form: FormData): Promise<ActionResult> {
     if (error) throw error
     revalidatePath('/dashboard/members')
     revalidatePath('/dashboard/sku')
+    revalidatePath('/dashboard/skk')
     return ok(id ? 'Data anggota diperbarui.' : 'Anggota berhasil ditambahkan.')
   } catch (error) {
     return fail(errorMessage(error))
@@ -320,6 +321,55 @@ export async function saveSkuProgressAction(
     revalidatePath(`/dashboard/sku/${memberId}`)
     revalidatePath('/dashboard/sku')
     return ok('Progress SKU berhasil diperbarui.')
+  } catch (error) {
+    return fail(errorMessage(error))
+  }
+}
+
+export async function saveSkkProgressAction(
+  memberId: string,
+  gudepId: string,
+  skkItemId: number,
+  level: SkkLevel,
+  status: SkuStatus,
+  note: string,
+): Promise<ActionResult> {
+  try {
+    if (!['Purwa', 'Madya', 'Utama'].includes(level)) return fail('Tingkat SKK tidak valid.')
+    if (!['Belum', 'Proses', 'Lulus'].includes(status)) return fail('Status SKK tidak valid.')
+    const { supabase, user } = await ownsGudep(gudepId)
+    const [{ data: member }, { data: item }] = await Promise.all([
+      supabase.from('members').select('id').eq('id', memberId).eq('gudep_id', gudepId).maybeSingle(),
+      supabase.from('skk_requirements').select('id').eq('skk_item_id', skkItemId).eq('level', level).maybeSingle(),
+    ])
+    if (!member) return fail('Anggota tidak ditemukan.')
+    if (!item) return fail('Syarat SKK tidak ditemukan. Jalankan seed SKK resmi terlebih dahulu.')
+    if (status === 'Lulus' && level !== 'Purwa') {
+      const prerequisite: SkkLevel = level === 'Madya' ? 'Purwa' : 'Madya'
+      const { data: previous } = await supabase
+        .from('member_skk_progress')
+        .select('status')
+        .eq('member_id', memberId)
+        .eq('skk_item_id', skkItemId)
+        .eq('level', prerequisite)
+        .maybeSingle()
+      if (previous?.status !== 'Lulus') return fail(`Luluskan tingkat ${prerequisite} terlebih dahulu.`)
+    }
+
+    const { error } = await supabase.from('member_skk_progress').upsert({
+      member_id: memberId,
+      skk_item_id: skkItemId,
+      level,
+      status,
+      note: note.trim() || null,
+      validated_by: status === 'Lulus' ? user.id : null,
+      validated_at: status === 'Lulus' ? new Date().toISOString() : null,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'member_id,skk_item_id,level' })
+    if (error) throw error
+    revalidatePath(`/dashboard/skk/${memberId}`)
+    revalidatePath('/dashboard/skk')
+    return ok(`Progress SKK tingkat ${level} berhasil diperbarui.`)
   } catch (error) {
     return fail(errorMessage(error))
   }

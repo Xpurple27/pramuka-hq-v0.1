@@ -11,12 +11,13 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   const gudepId = context.activeGudep.id
   const today = new Date().toISOString().slice(0, 10)
-  const [members, patrols, sessions, attendance, skuProgress, upcoming] = await Promise.all([
+  const [members, patrols, sessions, attendance, skuProgress, skkProgress, upcoming] = await Promise.all([
     supabase.from('members').select('*', { count: 'exact', head: true }).eq('gudep_id', gudepId).eq('status', 'Aktif'),
     supabase.from('patrols').select('*', { count: 'exact', head: true }).eq('gudep_id', gudepId).eq('is_active', true),
     supabase.from('training_sessions').select('*', { count: 'exact', head: true }).eq('gudep_id', gudepId),
     supabase.from('attendance').select('status,training_sessions!inner(gudep_id)').eq('training_sessions.gudep_id', gudepId),
     supabase.from('member_sku_progress').select('status,members!inner(gudep_id)').eq('members.gudep_id', gudepId),
+    supabase.from('member_skk_progress').select('status,members!inner(gudep_id)').eq('members.gudep_id', gudepId),
     supabase.from('training_sessions').select('*').eq('gudep_id', gudepId).gte('training_date', today).order('training_date').limit(3),
   ])
   const attendanceRows = attendance.data ?? []
@@ -25,6 +26,9 @@ export default async function DashboardPage() {
   const skuRows = skuProgress.data ?? []
   const passedSku = skuRows.filter((row) => row.status === 'Lulus').length
   const skuRate = skuRows.length ? Math.round((passedSku / skuRows.length) * 100) : 0
+  const skkRows = skkProgress.data ?? []
+  const passedSkk = skkRows.filter((row) => row.status === 'Lulus').length
+  const skkRate = skkRows.length ? Math.round((passedSkk / skkRows.length) * 100) : 0
   const stats = [
     { label: 'Anggota Aktif', value: members.count ?? 0, icon: Users, color: 'text-emerald-300', href: '/dashboard/members' },
     { label: 'Regu Aktif', value: patrols.count ?? 0, icon: ShieldCheck, color: 'text-amber-300', href: '/dashboard/patrols' },
@@ -57,7 +61,8 @@ export default async function DashboardPage() {
           <div className="space-y-5">
             <div><div className="mb-2 flex justify-between text-xs"><span className="text-slate-400">Kehadiran rata-rata</span><strong className="text-violet-300">{attendanceRate}%</strong></div><div className="h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-violet-400" style={{ width: `${attendanceRate}%` }} /></div></div>
             <div><div className="mb-2 flex justify-between text-xs"><span className="text-slate-400">Item SKU lulus</span><strong className="text-amber-300">{skuRate}%</strong></div><div className="h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-amber-400" style={{ width: `${skuRate}%` }} /></div></div>
-            <div className="rounded-xl bg-emerald-400/5 p-4"><CheckCircle2 className="mb-2 h-5 w-5 text-emerald-400" /><p className="text-xs leading-5 text-slate-400">Semua statistik dihitung otomatis dari catatan latihan, absensi, dan progress SKU.</p></div>
+            <div><div className="mb-2 flex justify-between text-xs"><span className="text-slate-400">Tingkat SKK lulus</span><strong className="text-sky-300">{skkRate}%</strong></div><div className="h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-sky-400" style={{ width: `${skkRate}%` }} /></div></div>
+            <div className="rounded-xl bg-emerald-400/5 p-4"><CheckCircle2 className="mb-2 h-5 w-5 text-emerald-400" /><p className="text-xs leading-5 text-slate-400">Semua statistik dihitung otomatis dari catatan latihan, absensi, SKU, dan SKK.</p></div>
           </div>
         </div>
       </section>

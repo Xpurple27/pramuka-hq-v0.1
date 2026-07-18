@@ -73,6 +73,7 @@ export type Attendance = {
 }
 
 export type SkuStatus = 'Belum' | 'Proses' | 'Lulus'
+export type SkkLevel = 'Purwa' | 'Madya' | 'Utama'
 
 export type SkuItem = {
   id: number
@@ -87,6 +88,35 @@ export type MemberSkuProgress = {
   id: string
   member_id: string
   sku_item_id: number
+  status: SkuStatus
+  note: string | null
+  validated_by: string | null
+  validated_at: string | null
+  updated_at: string
+}
+
+export type SkkRequirement = {
+  id: number
+  skk_item_id: number
+  level: SkkLevel
+  description: string
+}
+
+export type SkkItem = {
+  id: number
+  field_number: number
+  field_name: string
+  item_number: number
+  name: string
+  source_reference: string
+  skk_requirements: SkkRequirement[]
+}
+
+export type MemberSkkProgress = {
+  id: string
+  member_id: string
+  skk_item_id: number
+  level: SkkLevel
   status: SkuStatus
   note: string | null
   validated_by: string | null

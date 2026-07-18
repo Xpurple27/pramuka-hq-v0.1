@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Award, CalendarDays, ClipboardCheck, Compass, FileBarChart, LayoutDashboard, LogOut, Menu, School, Settings, ShieldCheck, Users, X } from 'lucide-react'
+import { Award, BadgeCheck, CalendarDays, ClipboardCheck, Compass, FileBarChart, LayoutDashboard, LogOut, Menu, School, Settings, ShieldCheck, Users, X } from 'lucide-react'
 import { logoutAction } from '@/app/actions/auth'
 import { selectGudepAction } from '@/app/actions/data'
 import type { Gudep } from '@/types/scouthub'
@@ -16,6 +16,7 @@ const navigation = [
   { href: '/dashboard/training', label: 'Latihan', icon: CalendarDays },
   { href: '/dashboard/attendance', label: 'Absensi', icon: ClipboardCheck },
   { href: '/dashboard/sku', label: 'SKU', icon: Award },
+  { href: '/dashboard/skk', label: 'SKK', icon: BadgeCheck },
   { href: '/dashboard/reports', label: 'Laporan', icon: FileBarChart },
   { href: '/dashboard/settings', label: 'Pengaturan', icon: Settings },
 ]

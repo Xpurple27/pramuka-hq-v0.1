@@ -1,6 +1,6 @@
 # ScoutHub v1
 
-ScoutHub adalah sistem operasional pembinaan pramuka di tingkat sekolah dan gugus depan. Aplikasi membantu pembina mengelola gudep, anggota, regu, latihan, absensi, progress SKU, dashboard, dan laporan dari satu tempat.
+ScoutHub adalah sistem operasional pembinaan pramuka di tingkat sekolah dan gugus depan. Aplikasi membantu pembina mengelola gudep, anggota, regu, latihan, absensi, progress SKU dan SKK Penggalang, dashboard, serta laporan dari satu tempat.
 
 ## Fitur
 
@@ -10,9 +10,10 @@ ScoutHub adalah sistem operasional pembinaan pramuka di tingkat sekolah dan gugu
 - CRUD regu, pemimpin/wakil, warna, jenis, dan jumlah anggota.
 - Jadwal serta riwayat latihan lengkap dengan materi dan evaluasi.
 - Absensi massal per pertemuan: Hadir, Izin, Sakit, atau Alpa.
-- Tracker SKU per anggota dengan progress otomatis.
+- Tracker 90 butir SKU resmi Penggalang Ramu, Rakit, dan Terap.
+- Tracker 81 jenis SKK Penggalang dalam lima bidang, lengkap dengan jenjang Purwa, Madya, dan Utama.
 - Dashboard berbasis data nyata, tanpa angka contoh.
-- Ekspor anggota, latihan, absensi, dan SKU ke CSV/Excel.
+- Ekspor anggota, latihan, absensi, SKU, dan SKK ke CSV/Excel.
 - Tampilan responsif, installable PWA, dan mode cetak/PDF.
 - Row Level Security yang memisahkan data antar akun/gudep.
 
@@ -38,9 +39,10 @@ Prasyarat: Node.js 20 atau lebih baru dan sebuah project Supabase.
    Jangan pernah menaruh `service_role` key di aplikasi frontend atau GitHub.
 
 3. Buka Supabase **SQL Editor** dan jalankan [`supabase/schema.sql`](supabase/schema.sql).
-4. Untuk pengujian SKU, jalankan [`supabase/seed_sku_template.sql`](supabase/seed_sku_template.sql). Berkas ini hanya template teknis; ganti dengan butir SKU resmi gudep sebelum pilot.
-5. Jalankan `npm run dev`, lalu buka `http://localhost:3000`.
-6. Daftar sebagai pembina, buat gudep, lalu isi data dari menu dashboard.
+4. Jalankan [`supabase/seed_sku_penggalang.sql`](supabase/seed_sku_penggalang.sql) untuk mengisi 90 butir SKU resmi.
+5. Jalankan [`supabase/seed_skk_penggalang.sql`](supabase/seed_skk_penggalang.sql) untuk mengisi 81 jenis SKK beserta 243 persyaratan tingkatnya.
+6. Jalankan `npm run dev`, lalu buka `http://localhost:3000`.
+7. Daftar sebagai pembina, buat gudep, lalu isi data dari menu dashboard.
 
 ## Konfigurasi Supabase Auth
 
@@ -58,7 +60,7 @@ Konfirmasi email boleh tetap aktif. Untuk pilot internal, akun pembina juga dapa
 2. Tambahkan tiga environment variables dari `.env.example`.
 3. Ubah `NEXT_PUBLIC_SITE_URL` menjadi URL produksi.
 4. Deploy, lalu tambahkan URL produksi ke redirect URL Supabase Auth.
-5. Uji register/login, isolasi dua akun, CRUD, absensi, SKU, ekspor, dan instalasi PWA.
+5. Uji register/login, isolasi dua akun, CRUD, absensi, SKU, SKK, ekspor, dan instalasi PWA.
 
 ## Pemeriksaan
 
@@ -86,5 +88,12 @@ src/components/dashboard komponen manajemen dan layout
 src/lib/                  konteks gudep aktif
 src/utils/supabase/       koneksi browser/server dan refresh session
 supabase/schema.sql       tabel, relasi, index, trigger, dan RLS
+supabase/seed_sku_penggalang.sql 90 butir SKU Penggalang
+supabase/seed_skk_penggalang.sql 81 SKK dan 243 persyaratan tingkat
 public/sw.js              service worker PWA
 ```
+
+## Sumber materi kecakapan
+
+- SKU: *Panduan Penyelesaian Syarat Kecakapan Umum Pramuka Golongan Penggalang*, Keputusan Kwarnas Nomor 198 dan 199 Tahun 2011.
+- SKK: Keputusan Kwarnas Gerakan Pramuka Nomor 132 Tahun 1979. Seed hanya memuat persyaratan yang berlaku bagi Penggalang; SKK khusus Siaga dan tambahan khusus Penegak/Pandega tidak dimasukkan.
