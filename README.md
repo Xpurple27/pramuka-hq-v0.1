@@ -44,6 +44,18 @@ Prasyarat: Node.js 20 atau lebih baru dan sebuah project Supabase.
 6. Jalankan `npm run dev`, lalu buka `http://localhost:3000`.
 7. Daftar sebagai pembina, buat gudep, lalu isi data dari menu dashboard.
 
+### Menggunakan project Supabase yang sama dengan Adm-Pramuka-V1
+
+Kedua aplikasi dapat berbagi Supabase Auth tanpa menimpa data karena nama tabelnya berbeda. Untuk project yang sudah memiliki tabel `peserta`, `jadwal`, `absensi`, `laporan`, dan `dokumentasi`:
+
+1. Buat backup database melalui dashboard Supabase.
+2. Jalankan [`supabase/schema.sql`](supabase/schema.sql).
+3. Jalankan [`supabase/setup_shared_adm_pramuka.sql`](supabase/setup_shared_adm_pramuka.sql). Migrasi ini mempertahankan data lama, mengaktifkan RLS, dan membuat profil ScoutHub bagi akun yang sudah ada.
+4. Jalankan [`supabase/seed_sku_penggalang.sql`](supabase/seed_sku_penggalang.sql).
+5. Jalankan [`supabase/seed_skk_penggalang.sql`](supabase/seed_skk_penggalang.sql).
+
+Gunakan Project URL dan `anon` key yang sama pada environment variables kedua aplikasi. Jangan memasukkan `service_role` key ke frontend atau repositori.
+
 ## Konfigurasi Supabase Auth
 
 Pada **Authentication → URL Configuration**:
@@ -88,6 +100,7 @@ src/components/dashboard komponen manajemen dan layout
 src/lib/                  konteks gudep aktif
 src/utils/supabase/       koneksi browser/server dan refresh session
 supabase/schema.sql       tabel, relasi, index, trigger, dan RLS
+supabase/setup_shared_adm_pramuka.sql migrasi aman untuk Supabase bersama
 supabase/seed_sku_penggalang.sql 90 butir SKU Penggalang
 supabase/seed_skk_penggalang.sql 81 SKK dan 243 persyaratan tingkat
 public/sw.js              service worker PWA
