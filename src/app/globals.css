@@ -32,6 +32,67 @@ body {
   background-attachment: fixed;
 }
 
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card {
+  background: rgba(13, 27, 20, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+}
+
+.input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.7rem 0.85rem;
+  color: #f8fafc;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+}
+
+.input option { background: #0f172a; }
+
+.btn-primary,
+.btn-secondary,
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  transition: 160ms ease;
+}
+
+.btn-primary { background: #34d399; color: #052e20; padding: 0.7rem 1rem; }
+.btn-primary:hover { background: #6ee7b7; transform: translateY(-1px); }
+.btn-secondary { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: #cbd5e1; padding: 0.7rem 1rem; }
+.btn-secondary:hover { border-color: rgba(52,211,153,.35); color: #fff; }
+.icon-button { height: 2.25rem; width: 2.25rem; border: 1px solid rgba(255,255,255,.08); color: #94a3b8; }
+.icon-button:hover { background: rgba(255,255,255,.06); color: #fff; }
+.btn-primary:disabled, .btn-secondary:disabled, .icon-button:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+
+@media print {
+  aside, header, nav, button { display: none !important; }
+  body, main { background: white !important; color: black !important; }
+  .lg\:pl-64 { padding-left: 0 !important; }
+  .card { break-inside: avoid; border: 1px solid #ddd; background: white; box-shadow: none; }
+  .text-white { color: #111 !important; }
+  .text-slate-500, .text-slate-400 { color: #555 !important; }
+}
+
 /* Glassmorphism helpers */
 .glass-panel {
   background: rgba(11, 22, 17, 0.65);

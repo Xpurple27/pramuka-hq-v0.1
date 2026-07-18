@@ -8,6 +8,10 @@ export type AuthState = {
   success?: boolean
 }
 
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : 'Terjadi kesalahan sistem.'
+}
+
 /**
  * Handles user login with email and password
  */
@@ -32,8 +36,8 @@ export async function loginAction(
     if (error) {
       return { error: error.message }
     }
-  } catch (err: any) {
-    return { error: err.message || 'Terjadi kesalahan sistem saat login.' }
+  } catch (err: unknown) {
+    return { error: getErrorMessage(err) }
   }
 
   redirect('/dashboard')
@@ -75,12 +79,12 @@ export async function signupAction(
     if (data?.session) {
       redirect('/dashboard')
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     // If it's a redirect error from next.js, let it throw normally
-    if (err.digest?.startsWith('NEXT_REDIRECT')) {
+    if (typeof err === 'object' && err !== null && 'digest' in err && String(err.digest).startsWith('NEXT_REDIRECT')) {
       throw err
     }
-    return { error: err.message || 'Terjadi kesalahan sistem saat mendaftar.' }
+    return { error: getErrorMessage(err) }
   }
 
   return {
